@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+
+require 's3_uploader'
+require 'optparse'
+
+options = {}
+source = nil
+bucket = nil
+
+opt_parser = OptionParser.new do |opt|
+  opt.banner = "Usage: s3uploader [OPTIONS] SOURCE BUCKET"
+  opt.separator  ""
+  opt.separator  "Options"
+
+  opt.on("-t","--threads THREADS","number of concurrent threads") do |threads|
+    options[:threads] = threads.to_i
+  end
+
+  opt.on("-d","--destination DESTINATION_DIR","destination directory") do |destination_dir|
+    options[:destination_dir] = destination_dir
+  end
+  
+  opt.on("-p","--public PUBLIC","set ACL of files to public. Default: false") do |public_files|
+    options[:public] = public_files
+  end
+  
+  opt.on("-k","--key KEY","S3 key. Default: environment variable S3_KEY") do |s3_key|
+    options[:s3_key] = s3_key
+  end
+  
+  opt.on("-s","--secret SECRET","S3 secret key. Default: environment variable S3_SECRET") do |s3_secret|
+    options[:s3_secret] = s3_secret
+  end
+
+  opt.on("-h","--help","help") do
+    puts opt_parser
+    exit
+  end
+end
+
+opt_parser.parse!
+
+if !ARGV[0] or !ARGV[1]
+  puts "Missing source directory or destination bucket"
+  exit
+end
+
+S3Uploader.upload_directory(ARGV[0], ARGV[1], options)
