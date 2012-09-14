@@ -10,7 +10,7 @@ module S3Uploader
     
     raise 'Source must be a directory' unless File.directory?(source)
     
-    source.chop! if source.end_with?('/')
+    source = source.chop if source.end_with?('/')
     if options[:destination_dir] != '' and !options[:destination_dir].end_with?('/')
       options[:destination_dir] = "#{options[:destination_dir]}/"
     end
