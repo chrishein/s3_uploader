@@ -18,6 +18,12 @@ Or install it yourself as:
 
 ## Usage
 
+	S3Uploader.upload_directory('/tmp/test', 'mybucket',
+		{ 	:s3_key => YOUR_KEY, :s3_secret => YOUR_SECRET_KEY,
+			:destination_dir => 'test/', :threads => 4 })
+
+If no keys are provided, it uses S3_KEY and S3_SECRET environment variables.
+
 	S3Uploader.upload_directory('/tmp/test', 'mybucket', { :destination_dir => 'test/', :threads => 4 })
 	
 Or as a command line binary
