@@ -1,6 +1,15 @@
 # S3Uploader
 
-Multithreaded recursive directory uploader to S3 using Fog
+Multithreaded recursive directory uploader to S3 using [fog](https://github.com/fog/fog).
+
+It recursively transverses all contents of the directory provided as source parameter, uploading all files to the destination bucket.
+A destination folder where to put the uploaded files tree inside the bucket can be specified too.
+
+By default, it uses 5 threads to upload files in parallel, but the number can be configured as well.
+
+Files are stored as non public if not otherwise specified.
+
+A CLI binary is included.
 
 ## Installation
 
@@ -27,8 +36,18 @@ If no keys are provided, it uses S3_KEY and S3_SECRET environment variables.
 	S3Uploader.upload_directory('/tmp/test', 'mybucket', { :destination_dir => 'test/', :threads => 4 })
 	
 Or as a command line binary
-
+	
+	s3uploader -k YOUR_KEY -s YOUR_SECRET_KEY -d test/ -t 4 /tmp/test mybucket
+	
+Again, it uses S3_KEY and S3_SECRET environment variables if non provided in parameters.
+	
 	s3uploader -d test/ -t 4 /tmp/test mybucket
+
+## TODO
+
+1. Write test suite
+2. Allow regex pattern matching to select files to upload
+3. Add optional time, size and number of files uploaded report at end of process
 
 ## Contributing
 
