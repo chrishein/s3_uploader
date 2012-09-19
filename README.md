@@ -28,16 +28,19 @@ Or install it yourself as:
 ## Usage
 
 	S3Uploader.upload_directory('/tmp/test', 'mybucket',
-		{ 	:s3_key => YOUR_KEY, :s3_secret => YOUR_SECRET_KEY,
-			:destination_dir => 'test/', :threads => 4 })
+		{ 	:s3_key => YOUR_KEY,
+			:s3_secret => YOUR_SECRET_KEY,
+			:destination_dir => 'test/',
+			:region => 'eu-west-1',
+			:threads => 4 })
 
-If no keys are provided, it uses S3_KEY and S3_SECRET environment variables.
+If no keys are provided, it uses S3_KEY and S3_SECRET environment variables. us-east-1 is the default region.
 
 	S3Uploader.upload_directory('/tmp/test', 'mybucket', { :destination_dir => 'test/', :threads => 4 })
 	
 Or as a command line binary
 	
-	s3uploader -k YOUR_KEY -s YOUR_SECRET_KEY -d test/ -t 4 /tmp/test mybucket
+	s3uploader -r eu-west-1 -k YOUR_KEY -s YOUR_SECRET_KEY -d test/ -t 4 /tmp/test mybucket
 	
 Again, it uses S3_KEY and S3_SECRET environment variables if non provided in parameters.
 	
