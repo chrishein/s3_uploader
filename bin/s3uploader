@@ -20,6 +20,10 @@ opt_parser = OptionParser.new do |opt|
     options[:destination_dir] = destination_dir
   end
   
+  opt.on("-r","--region REGION","region where the bucket is stored. Default: us-east-1") do |region|
+    options[:region] = region
+  end
+  
   opt.on("-p","--public PUBLIC","set ACL of files to public. Default: false") do |public_files|
     options[:public] = public_files
   end
