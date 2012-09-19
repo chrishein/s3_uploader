@@ -5,7 +5,8 @@ module S3Uploader
       :threads => 5,
       :s3_key => ENV['S3_KEY'],
       :s3_secret => ENV['S3_SECRET'],
-      :public => false
+      :public => false,
+      :region => 'us-east-1'
     }.merge(options)
     
     raise 'Source must be a directory' unless File.directory?(source)
@@ -23,7 +24,8 @@ module S3Uploader
     connection = Fog::Storage.new({
         :provider => 'AWS',
         :aws_access_key_id => options[:s3_key],
-        :aws_secret_access_key => options[:s3_secret]
+        :aws_secret_access_key => options[:s3_secret],
+        :region => options[:region]
     })
     
     directory = connection.directories.new(:key => bucket)
