@@ -5,7 +5,7 @@ describe S3Uploader do
       Fog.mock!
       @base_test_directory = '/tmp/test_s3_uploader'
       create_test_files(@base_test_directory, 10)
-      create_test_files("#{@base_test_directory}/subdir1", 5)
+      create_test_files(File.join(@base_test_directory, 'subdir1'), 5)
     end
     
     it "should upload all files in a directory" do
