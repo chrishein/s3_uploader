@@ -48,9 +48,8 @@ Again, it uses S3_KEY and S3_SECRET environment variables if non provided in par
 
 ## TODO
 
-1. Write test suite
-2. Allow regex pattern matching to select files to upload
-3. Add optional time, size and number of files uploaded report at end of process
+1. Allow regex pattern matching to select files to upload
+2. Add optional time, size and number of files uploaded report at end of process
 
 ## Contributing
 
