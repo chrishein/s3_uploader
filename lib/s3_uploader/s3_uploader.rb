@@ -9,6 +9,8 @@ module S3Uploader
       :region => 'us-east-1'
     }.merge(options)
     
+    log = options[:logger] || Logger.new(STDOUT)
+    
     raise 'Source must be a directory' unless File.directory?(source)
     
     source = source.chop if source.end_with?('/')
@@ -21,12 +23,16 @@ module S3Uploader
       files << f
     end
     
-    connection = Fog::Storage.new({
-        :provider => 'AWS',
-        :aws_access_key_id => options[:s3_key],
-        :aws_secret_access_key => options[:s3_secret],
-        :region => options[:region]
-    })
+    if options[:connection]
+      connection = options[:connection]
+    else
+      connection = Fog::Storage.new({
+          :provider => 'AWS',
+          :aws_access_key_id => options[:s3_key],
+          :aws_secret_access_key => options[:s3_secret],
+          :region => options[:region]
+      })
+    end
     
     directory = connection.directories.new(:key => bucket)
     
@@ -45,7 +51,7 @@ module S3Uploader
           file = files.pop
           key = file.gsub(source, '')[1..-1]
           dest = "#{options[:destination_dir]}#{key}"
-          puts "[#{file_number}/#{total_files}] Uploading #{key} to s3://#{bucket}/#{dest}"
+          log.info("[#{file_number}/#{total_files}] Uploading #{key} to s3://#{bucket}/#{dest}")
           
           directory.files.create(
             :key    => dest,
