@@ -13,6 +13,19 @@ module S3Uploader
     
     raise 'Source must be a directory' unless File.directory?(source)
     
+    if options[:connection]
+      connection = options[:connection]
+    else
+      raise "Missing access keys" if options[:s3_key].nil? or options[:s3_secret].nil?
+      
+      connection = Fog::Storage.new({
+          :provider => 'AWS',
+          :aws_access_key_id => options[:s3_key],
+          :aws_secret_access_key => options[:s3_secret],
+          :region => options[:region]
+      })
+    end
+    
     source = source.chop if source.end_with?('/')
     if options[:destination_dir] != '' and !options[:destination_dir].end_with?('/')
       options[:destination_dir] = "#{options[:destination_dir]}/"
@@ -21,17 +34,6 @@ module S3Uploader
     files = Queue.new
     Dir.glob("#{source}/**/*").select{ |f| !File.directory?(f) }.each do |f|
       files << f
-    end
-    
-    if options[:connection]
-      connection = options[:connection]
-    else
-      connection = Fog::Storage.new({
-          :provider => 'AWS',
-          :aws_access_key_id => options[:s3_key],
-          :aws_secret_access_key => options[:s3_secret],
-          :region => options[:region]
-      })
     end
     
     directory = connection.directories.new(:key => bucket)

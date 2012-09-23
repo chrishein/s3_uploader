@@ -1,37 +1,55 @@
 require 'spec_helper'
 
-describe S3Uploader do  
-    before :all do
-      Fog.mock!
-      
-      @connection = Fog::Storage.new({
-        :provider                 => 'AWS',
-        :aws_access_key_id        => '11111111111',
-        :aws_secret_access_key    => 'XXXXXXXXXXXXXXXXXXXXXXXXXXX'
-      })
-      
-      @connection.directories.create(
-        :key    => 'mybucket',
-        :public => true
-      )
-      
-      @tmp_directory = File.join(Dir.tmpdir, 'test_s3_uploader')
-      create_test_files(@tmp_directory, 10)
-      create_test_files(File.join(@tmp_directory, 'subdir1'), 5)
-      @logger = Logger.new(StringIO.new)
-    end
-    
-    it "should upload all files in a directory" do
-      
-      @logger.should_receive(:info).exactly(15).times.with(/Uploading/)
-      
-      S3Uploader.upload_directory(@tmp_directory, 'mybucket',
+describe S3Uploader do
+  
+  it 'when called with missing access keys it should raise an exception' do
+    lambda {
+      S3Uploader.upload_directory('/tmp', 'mybucket',
         { :destination_dir => 'test1/',
-          :logger => @logger,
-          :connection => @connection
+          :s3_key => nil,
+          :s3_secret => nil
         })
-      
-    end
+    }.should raise_error('Missing access keys')
+  end
+  
+  it 'when called with source not directory it should raise an exception' do
+    lambda {
+      S3Uploader.upload_directory('/xzzaz1232', 'mybucket')
+    }.should raise_error('Source must be a directory')
+  end
+  
+  
+  before :all do
+    Fog.mock!
+    
+    @connection = Fog::Storage.new({
+      :provider                 => 'AWS',
+      :aws_access_key_id        => '11111111111',
+      :aws_secret_access_key    => 'XXXXXXXXXXXXXXXXXXXXXXXXXXX'
+    })
+    
+    @connection.directories.create(
+      :key    => 'mybucket',
+      :public => true
+    )
+    
+    @tmp_directory = File.join(Dir.tmpdir, 'test_s3_uploader')
+    create_test_files(@tmp_directory, 10)
+    create_test_files(File.join(@tmp_directory, 'subdir1'), 5)
+    @logger = Logger.new(StringIO.new)
+  end
+  
+  it "should upload all files in a directory" do
+    
+    @logger.should_receive(:info).exactly(15).times.with(/Uploading/)
+    
+    S3Uploader.upload_directory(@tmp_directory, 'mybucket',
+      { :destination_dir => 'test1/',
+        :logger => @logger,
+        :connection => @connection
+      })
+    
+  end
     
 end
 
