@@ -38,6 +38,7 @@ module S3Uploader
     
     directory = connection.directories.new(:key => bucket)
     
+    start = Time.now
     total_files = files.size
     file_number = 0
     @mutex = Mutex.new
@@ -64,6 +65,11 @@ module S3Uploader
       }
     end
     threads.each { |t| t.join }
+    
+    finish = Time.now
+    elapsed = finish.to_f - start.to_f
+    mins, secs = elapsed.divmod 60.0
+    puts("Uploaded #{total_files} in %d:%04.2f" % [mins.to_i, secs])
     
   end
 end
