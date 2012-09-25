@@ -42,6 +42,7 @@ describe S3Uploader do
   it "should upload all files in a directory" do
     puts @tmp_directory
     @logger.should_receive(:info).exactly(15).times.with(/Uploading/)
+    @logger.should_receive(:info).exactly(1).times.with(/Uploaded/)
     
     S3Uploader.upload_directory(@tmp_directory, 'mybucket',
       { :destination_dir => 'test1/',
