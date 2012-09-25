@@ -40,7 +40,7 @@ describe S3Uploader do
   end
   
   it "should upload all files in a directory" do
-    
+    puts @tmp_directory
     @logger.should_receive(:info).exactly(15).times.with(/Uploading/)
     
     S3Uploader.upload_directory(@tmp_directory, 'mybucket',
@@ -57,6 +57,6 @@ def create_test_files(directory, number_of_files)
   FileUtils.mkdir_p directory
 
   number_of_files.times do |i|
-    Open3.popen3('dd if=/dev/zero of=#{directory}/file#{i}.txt count=1024 bs=1024')
+    Open3.popen3("dd if=/dev/zero of=#{directory}/file#{i}.txt count=1024 bs=1024")
   end  
 end
