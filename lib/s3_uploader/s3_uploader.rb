@@ -1,4 +1,5 @@
 module S3Uploader
+  KILO_SIZE = 1024.0
   def self.upload_directory(source, bucket, options = {})
     options = {
       :destination_dir => '',
@@ -30,10 +31,12 @@ module S3Uploader
     if options[:destination_dir] != '' and !options[:destination_dir].end_with?('/')
       options[:destination_dir] = "#{options[:destination_dir]}/"
     end
-    
+    total_size = 0
     files = Queue.new
     Dir.glob("#{source}/**/*").select{ |f| !File.directory?(f) }.each do |f|
       files << f
+      total_size += File.size(f)
+      
     end
     
     directory = connection.directories.new(:key => bucket)
@@ -69,7 +72,7 @@ module S3Uploader
     finish = Time.now
     elapsed = finish.to_f - start.to_f
     mins, secs = elapsed.divmod 60.0
-    log.info("Uploaded #{total_files} in %d:%04.2f" % [mins.to_i, secs])
+    log.info("Uploaded %d (%.#{0}f KB) in %d:%04.2f" % [total_files, total_size / KILO_SIZE, mins.to_i, secs])
     
   end
 end
