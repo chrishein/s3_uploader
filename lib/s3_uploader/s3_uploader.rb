@@ -57,13 +57,18 @@ module S3Uploader
           file = files.pop
           key = file.gsub(source, '')[1..-1]
           dest = "#{options[:destination_dir]}#{key}"
-          log.info("[#{file_number}/#{total_files}] Uploading #{key} to s3://#{bucket}/#{dest}")
           
-          directory.files.create(
+          uploaded_file = directory.files.create(
             :key    => dest,
             :body   => File.open(file),
             :public => options[:public]
           )
+
+          if options[:public]
+            puts "[#{file_number}/#{total_files}] Uploading #{key} to " + uploaded_file.public_url
+          else
+            log.info("[#{file_number}/#{total_files}] Uploading #{key} to s3://#{bucket}/#{dest}")
+          end
         end 
       }
     end
