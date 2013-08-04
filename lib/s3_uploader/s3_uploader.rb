@@ -11,7 +11,7 @@ module S3Uploader
       :s3_key => ENV['S3_KEY'],
       :s3_secret => ENV['S3_SECRET'],
       :public => false,
-      :chunk_size => 10,
+      :chunk_size => 1,
       :region => 'us-east-1'
     }.merge(options)
     
@@ -60,7 +60,7 @@ module S3Uploader
         
         while not files.empty?
           chunk = []
-          chunk_size.each do 
+          chunk_size.times do 
             chunk << files.pop
           end
           chunk.compact! # remove trailing nil entries
