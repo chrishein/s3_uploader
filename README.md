@@ -1,3 +1,9 @@
+
+# DO NOT USE AS IS 
+This is a fork of the original project and was used for experimentation only.
+
+--------
+
 # S3Uploader
 
 Multithreaded recursive directory uploader to S3 using [fog](https://github.com/fog/fog).
