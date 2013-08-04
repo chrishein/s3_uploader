@@ -1,8 +1,12 @@
+require 'fileutils'
+#require 'digest/md5'
 module S3Uploader
   KILO_SIZE = 1024.0
   def self.upload_directory(source, bucket, options = {})
     options = {
       :destination_dir => '',
+      :delete_source => false ,
+      :source_glob => '**/*',
       :threads => 5,
       :s3_key => ENV['S3_KEY'],
       :s3_secret => ENV['S3_SECRET'],
@@ -33,7 +37,7 @@ module S3Uploader
     end
     total_size = 0
     files = Queue.new
-    Dir.glob("#{source}/**/*").select{ |f| !File.directory?(f) }.each do |f|
+    Dir.glob("#{source}/#{source_glob}").select{ |f| !File.directory?(f) }.each do |f|
       files << f
       total_size += File.size(f)
       
@@ -58,12 +62,22 @@ module S3Uploader
           key = file.gsub(source, '')[1..-1]
           dest = "#{options[:destination_dir]}#{key}"
           log.info("[#{file_number}/#{total_files}] Uploading #{key} to s3://#{bucket}/#{dest}")
+
+          connection.sync_clock # we don't want to get any time errors
           
+          # would be good to do upload_and_verify similar to how RightAWS::S3Interface.store_object_and_verify does it.
+          # e.g. to hand-in the MD5-sum of the file and check proper S3 upload via MD5 in the resulting XML.
           directory.files.create(
             :key    => dest,
             :body   => File.open(file),
             :public => options[:public]
           )
+
+          # If the user specifies :delete_source, delete each individual local file after upload completes
+          if options[:delete_source]
+            log.info("Deleting source file #{file}")
+            FileUtils.rm_f(file)
+          end
         end 
       }
     end
