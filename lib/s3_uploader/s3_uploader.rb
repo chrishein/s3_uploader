@@ -37,7 +37,7 @@ module S3Uploader
     end
     total_size = 0
     files = Queue.new
-    Dir.glob("#{source}/#{source_glob}").select{ |f| !File.directory?(f) }.each do |f|
+    Dir.glob("#{source}/#{options[:source_glob]}").select{ |f| !File.directory?(f) }.each do |f|
       files << f
       total_size += File.size(f)
       
