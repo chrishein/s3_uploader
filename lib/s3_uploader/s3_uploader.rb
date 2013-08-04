@@ -64,13 +64,14 @@ module S3Uploader
             chunk << files.pop
           end
           chunk.compact! # remove trailing nil entries
-          @mutex.synchronize do
-            file_number += chunk.size
-          end
+#          @mutex.synchronize do
+#            file_number += chunk.size
+#          end
           chunk.each do |file|
             key = file.gsub(source, '')[1..-1]
             dest = "#{options[:destination_dir]}#{key}"
-            log.info("[#{file_number}/#{total_files}] Uploading #{key} to s3://#{bucket}/#{dest}")
+#            log.info("[#{file_number}/#{total_files}] Uploading #{key} to s3://#{bucket}/#{dest}")
+            log.info("Uploading #{key} to s3://#{bucket}/#{dest}")
 
             # would be good to do upload_and_verify similar to how RightAWS::S3Interface.store_object_and_verify does it.
             # e.g. to hand-in the MD5-sum of the file and check proper S3 upload via MD5 in the resulting XML.
