@@ -1,3 +1,9 @@
+
+# DO NOT USE AS IS 
+This is a fork of the original project and was used for experimentation only.
+
+--------
+
 # S3Uploader
 
 Multithreaded recursive directory uploader to S3 using [fog](https://github.com/fog/fog).
@@ -32,6 +38,8 @@ Or install it yourself as:
 			:s3_secret => YOUR_SECRET_KEY,
 			:destination_dir => 'test/',
 			:region => 'eu-west-1',
+                        :source_glob => '**/*.tar.gz',   # default: "**/*"
+                        :delete_source => false ,        # default: false
 			:threads => 4 })
 
 If no keys are provided, it uses S3_KEY and S3_SECRET environment variables. us-east-1 is the default region.
