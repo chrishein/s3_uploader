@@ -11,6 +11,7 @@ module S3Uploader
       :s3_key => ENV['S3_KEY'],
       :s3_secret => ENV['S3_SECRET'],
       :public => false,
+      :chunk_size => 10,
       :region => 'us-east-1'
     }.merge(options)
     
@@ -35,6 +36,9 @@ module S3Uploader
     if options[:destination_dir] != '' and !options[:destination_dir].end_with?('/')
       options[:destination_dir] = "#{options[:destination_dir]}/"
     end
+
+    chunk_size = options[:chunk_size].to_i
+
     total_size = 0
     files = Queue.new
     Dir.glob("#{source}/#{options[:source_glob]}").select{ |f| !File.directory?(f) }.each do |f|
@@ -55,29 +59,34 @@ module S3Uploader
       threads[i] = Thread.new {
         
         while not files.empty?
+          chunk = []
+          chunk_size.each do 
+            chunk << files.pop
+          end
+          chunk.compact! # remove trailing nil entries
           @mutex.synchronize do
-            file_number += 1
+            file_number += chunk.size
           end
-          file = files.pop
-          key = file.gsub(source, '')[1..-1]
-          dest = "#{options[:destination_dir]}#{key}"
-          log.info("[#{file_number}/#{total_files}] Uploading #{key} to s3://#{bucket}/#{dest}")
+          chunk.each do |file|
+            key = file.gsub(source, '')[1..-1]
+            dest = "#{options[:destination_dir]}#{key}"
+            log.info("[#{file_number}/#{total_files}] Uploading #{key} to s3://#{bucket}/#{dest}")
 
-          connection.sync_clock # we don't want to get any time errors
-          
-          # would be good to do upload_and_verify similar to how RightAWS::S3Interface.store_object_and_verify does it.
-          # e.g. to hand-in the MD5-sum of the file and check proper S3 upload via MD5 in the resulting XML.
-          directory.files.create(
-            :key    => dest,
-            :body   => File.open(file),
-            :public => options[:public]
-          )
+            # would be good to do upload_and_verify similar to how RightAWS::S3Interface.store_object_and_verify does it.
+            # e.g. to hand-in the MD5-sum of the file and check proper S3 upload via MD5 in the resulting XML.
+            directory.files.create(
+                                   :key    => dest,
+                                   :body   => File.open(file),
+                                   :public => options[:public]
+                                   )
 
-          # If the user specifies :delete_source, delete each individual local file after upload completes
-          if options[:delete_source]
-            log.info("Deleting source file #{file}")
-            FileUtils.rm_f(file)
-          end
+            # If the user specifies :delete_source, delete each individual local file after upload completes
+            if options[:delete_source]
+              log.info("Deleting source file #{file}")
+              FileUtils.rm_f(file)
+            end
+          end # chunk.each
+          # if options[:delete_source] , we should also delete top-level directories
         end 
       }
     end
