@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e4bf7cff-9bd8-4435-ac6d-10b8e3e382bd" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/s3_uploader/s3_uploader.rb" afterPath="$PROJECT_DIR$/lib/s3_uploader/s3_uploader.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/s3_uploader/version.rb" afterPath="$PROJECT_DIR$/lib/s3_uploader/version.rb" />
     </list>
     <ignored path="s3_uploader.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -43,10 +43,37 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="s3_uploader.rb" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="s3_uploader.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/s3_uploader/s3_uploader.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="66" column="31" selection-start="2030" selection-end="2030" vertical-scroll-proportion="0.56458634">
+            <state line="66" column="31" selection-start="2030" selection-end="2030" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="version.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/s3_uploader/version.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="3" column="26" selection-start="42" selection-end="42" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Gemfile" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Gemfile">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="s3_uploader.gemspec" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/s3_uploader.gemspec">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -71,6 +98,7 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/lib/s3_uploader/s3_uploader.rb" />
+        <option value="$PROJECT_DIR$/lib/s3_uploader/version.rb" />
       </list>
     </option>
   </component>
@@ -269,7 +297,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/s3_uploader/s3_uploader.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="66" column="31" selection-start="2030" selection-end="2030" vertical-scroll-proportion="0.56458634">
+        <state line="66" column="31" selection-start="2030" selection-end="2030" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/s3_uploader/version.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="26" selection-start="42" selection-end="42" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Gemfile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/s3_uploader.gemspec">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
