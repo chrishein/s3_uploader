@@ -1,3 +1,6 @@
+.idea
+.DS_Store
+.idea/*
 *.gem
 *.rbc
 .bundle
