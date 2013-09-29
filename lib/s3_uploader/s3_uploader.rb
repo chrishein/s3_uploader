@@ -50,20 +50,23 @@ module S3Uploader
     options[:threads].times do |i|
       threads[i] = Thread.new {
         
-        while not files.empty?
+        until files.empty?
           @mutex.synchronize do
             file_number += 1
+            Thread.current["file_number"] = file_number
           end
-          file = files.pop
-          key = file.gsub(source, '')[1..-1]
-          dest = "#{options[:destination_dir]}#{key}"
-          log.info("[#{file_number}/#{total_files}] Uploading #{key} to s3://#{bucket}/#{dest}")
+          file = files.pop rescue nil
+          if file
+            key = file.gsub(source, '')[1..-1]
+            dest = "#{options[:destination_dir]}#{key}"
+            log.info("[#{Thread.current["file_number"]}/#{total_files}] Uploading #{key} to s3://#{bucket}/#{dest}")
           
-          directory.files.create(
-            :key    => dest,
-            :body   => File.open(file),
-            :public => options[:public]
-          )
+            directory.files.create(
+              :key    => dest,
+              :body   => File.open(file),
+              :public => options[:public]
+            )
+          end
         end 
       }
     end
