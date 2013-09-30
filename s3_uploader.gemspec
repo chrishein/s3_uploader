@@ -14,6 +14,7 @@ Gem::Specification.new do |gem|
   gem.name          = "s3_uploader"
   gem.require_paths = ["lib"]
   gem.version       = S3Uploader::VERSION
+  gem.license       = 'MIT'
   
   gem.add_dependency 'fog'
   

@@ -62,3 +62,7 @@ Again, it uses S3_KEY and S3_SECRET environment variables if non provided in par
 ## Contributors
 
 * [Mark Wagner](https://github.com/theSociableme)
+
+## License
+
+Distributed under the MIT License. See LICENSE file for further details.
