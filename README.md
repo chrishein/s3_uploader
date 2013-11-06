@@ -67,6 +67,7 @@ Metadata headers are documented [here](http://docs.aws.amazon.com/AmazonS3/lates
 ## Contributors
 
 * [Mark Wagner](https://github.com/theSociableme)
+* [Brandon Hilkert](https://github.com/brandonhilkert)
 
 ## License
 
