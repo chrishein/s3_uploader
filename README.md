@@ -32,8 +32,9 @@ Or install it yourself as:
 			:s3_secret => YOUR_SECRET_KEY,
 			:destination_dir => 'test/',
 			:region => 'eu-west-1',
-			:threads => 4
-      :metadata => {'Cache-Control' => 'max-age=315576000'} })
+			:threads => 4,
+      		:metadata => { 'Cache-Control' => 'max-age=315576000' } 
+		})
 
 If no keys are provided, it uses S3_KEY and S3_SECRET environment variables. us-east-1 is the default region.
 
@@ -46,6 +47,9 @@ Or as a command line binary
 Again, it uses S3_KEY and S3_SECRET environment variables if non provided in parameters.
 
 	s3uploader -d test/ -t 4 /tmp/test mybucket
+	
+	
+Metadata headers are documented [here](http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectPUT.html)
 
 ## TODO
 
