@@ -7,7 +7,8 @@ module S3Uploader
       :s3_key => ENV['S3_KEY'],
       :s3_secret => ENV['S3_SECRET'],
       :public => false,
-      :region => 'us-east-1'
+      :region => 'us-east-1',
+      :metadata => {}
     }.merge(options)
 
     log = options[:logger] || Logger.new(STDOUT)
@@ -65,7 +66,7 @@ module S3Uploader
               :key    => dest,
               :body   => File.open(file),
               :public => options[:public],
-              :metadata => { "Cache-Control" => "max-age=#{60 * 60 * 24 * 30 * 12}" }
+              :metadata => options[:metadata]
             )
           end
         end
