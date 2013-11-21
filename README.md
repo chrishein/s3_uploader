@@ -1,5 +1,7 @@
 # S3Uploader
 
+[![Gem Version](https://badge.fury.io/rb/s3_uploader.png)](http://badge.fury.io/rb/s3_uploader)
+
 Multithreaded recursive directory uploader to S3 using [fog](https://github.com/fog/fog).
 
 It recursively transverses all contents of the directory provided as source parameter, uploading all files to the destination bucket.
