@@ -8,7 +8,8 @@ module S3Uploader
       :s3_secret => ENV['S3_SECRET'],
       :public => false,
       :region => 'us-east-1',
-      :metadata => {}
+      :metadata => {},
+      :path_style => false
     }.merge(options)
 
     log = options[:logger] || Logger.new(STDOUT)
@@ -24,7 +25,8 @@ module S3Uploader
           :provider => 'AWS',
           :aws_access_key_id => options[:s3_key],
           :aws_secret_access_key => options[:s3_secret],
-          :region => options[:region]
+          :region => options[:region],
+          :path_style => options[:path_style]
       })
     end
 
