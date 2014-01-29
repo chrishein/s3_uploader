@@ -70,6 +70,7 @@ Metadata headers are documented [here](http://docs.aws.amazon.com/AmazonS3/lates
 
 * [Mark Wagner](https://github.com/theSociableme)
 * [Brandon Hilkert](https://github.com/brandonhilkert)
+* [Philip Cunningham](https://github.com/unsymbol)
 
 ## License
 
