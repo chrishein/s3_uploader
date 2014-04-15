@@ -9,12 +9,19 @@ module S3Uploader
       :public => false,
       :region => 'us-east-1',
       :metadata => {},
-      :path_style => false
+      :path_style => false,
+      :regexp => /.*/,
+      :gzip => false,
+      :gzip_working_dir => source,
+      :time_range => Time.at(0)..(Time.now + (60 * 60 * 24))
     }.merge(options)
 
     log = options[:logger] || Logger.new(STDOUT)
 
     raise 'Source must be a directory' unless File.directory?(source)
+    if options[:gzip_working_dir] != source && options[:gzip_working_dir][source]
+      raise 'gzip_working_dir may not be located within source-folder'
+    end
 
     if options[:connection]
       connection = options[:connection]
@@ -31,15 +38,33 @@ module S3Uploader
     end
 
     source = source.chop if source.end_with?('/')
+    options[:gzip_working_dir] = options[:gzip_working_dir].chop if options[:gzip_working_dir].end_with?('/')
     if options[:destination_dir] != '' and !options[:destination_dir].end_with?('/')
       options[:destination_dir] = "#{options[:destination_dir]}/"
     end
     total_size = 0
     files = Queue.new
-    Dir.glob("#{source}/**/*").select{ |f| !File.directory?(f) }.each do |f|
-      files << f
-      total_size += File.size(f)
 
+    Dir.glob("#{source}/**/*").select { |f| !File.directory?(f) }.each do |f|
+      if File.basename(f).match(options[:regexp]) and options[:time_range].cover?(File.mtime(f))
+        if options[:gzip] && File.extname(f) != '.gz'
+          dir, base = File.split(f)
+          dir       = dir.sub(source, options[:gzip_working_dir])
+          gz_file   = "#{dir}/#{base}.gz"
+
+          FileUtils.mkdir_p(dir) unless File.directory?(dir)
+          Zlib::GzipWriter.open(gz_file) do |gz|
+            gz.mtime     = File.mtime(f)
+            gz.orig_name = f
+            gz.write IO.binread(f)
+          end
+          files << gz_file
+          total_size += File.size(gz_file)
+        else
+          files << f
+          total_size += File.size(f)
+        end
+      end
     end
 
     directory = connection.directories.new(:key => bucket)
@@ -60,7 +85,7 @@ module S3Uploader
           end
           file = files.pop rescue nil
           if file
-            key = file.gsub(source, '')[1..-1]
+            key = file.gsub(source, '').gsub(options[:gzip_working_dir], '')[1..-1]
             dest = "#{options[:destination_dir]}#{key}"
             log.info("[#{Thread.current["file_number"]}/#{total_files}] Uploading #{key} to s3://#{bucket}/#{dest}")
 
