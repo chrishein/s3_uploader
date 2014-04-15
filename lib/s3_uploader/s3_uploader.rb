@@ -26,7 +26,7 @@ module S3Uploader
     if options[:connection]
       connection = options[:connection]
     else
-      raise "Missing access keys" if options[:s3_key].nil? or options[:s3_secret].nil?
+      raise "Missing access keys" if options[:s3_key].nil? || options[:s3_secret].nil?
 
       connection = Fog::Storage.new({
           :provider => 'AWS',
@@ -39,14 +39,14 @@ module S3Uploader
 
     source = source.chop if source.end_with?('/')
     options[:gzip_working_dir] = options[:gzip_working_dir].chop if options[:gzip_working_dir].end_with?('/')
-    if options[:destination_dir] != '' and !options[:destination_dir].end_with?('/')
+    if options[:destination_dir] != '' && !options[:destination_dir].end_with?('/')
       options[:destination_dir] = "#{options[:destination_dir]}/"
     end
     total_size = 0
     files = Queue.new
 
     Dir.glob("#{source}/**/*").select { |f| !File.directory?(f) }.each do |f|
-      if File.basename(f).match(options[:regexp]) and options[:time_range].cover?(File.mtime(f))
+      if File.basename(f).match(options[:regexp]) && options[:time_range].cover?(File.mtime(f))
         if options[:gzip] && File.extname(f) != '.gz'
           dir, base = File.split(f)
           dir       = dir.sub(source, options[:gzip_working_dir])
