@@ -125,7 +125,7 @@ describe S3Uploader do
       working_dir_content = Dir["#{working_dir}/**/*"].map { |f| f.sub(working_dir, '')[1..-1] }
 
       #expect compressed files within working_directory
-      expect(working_dir_content & compressed_files).to eq(compressed_files)
+      expect(working_dir_content & compressed_files).to match_array(compressed_files)
     end
 
     it 'when called with bad gzip_working_dir it should raise an exception' do
