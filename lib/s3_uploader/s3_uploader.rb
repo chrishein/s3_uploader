@@ -76,7 +76,7 @@ module S3Uploader
 
     threads = []
     options[:threads].times do |i|
-      threads[i] = Thread.new {
+      threads[i] = Thread.new do
 
         until files.empty?
           @mutex.synchronize do
@@ -97,7 +97,7 @@ module S3Uploader
             )
           end
         end
-      }
+      end
     end
     threads.each { |t| t.join }
 
