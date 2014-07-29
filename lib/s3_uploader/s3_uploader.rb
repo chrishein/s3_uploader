@@ -53,11 +53,7 @@ module S3Uploader
           gz_file   = "#{dir}/#{base}.gz"
 
           FileUtils.mkdir_p(dir) unless File.directory?(dir)
-          Zlib::GzipWriter.open(gz_file) do |gz|
-            gz.mtime     = File.mtime(f)
-            gz.orig_name = f
-            gz.write IO.binread(f)
-          end
+          system("gzip -c #{f} > #{gz_file}")
           files << gz_file
           total_size += File.size(gz_file)
         else
