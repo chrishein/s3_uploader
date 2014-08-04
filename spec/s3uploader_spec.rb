@@ -23,7 +23,7 @@ describe S3Uploader do
     (access + error).each do |file|
       directory, basename = File.split(File.join(tmp_directory, file))
       FileUtils.mkdir_p directory
-      Open3.popen3("dd if=/dev/zero of=#{directory}/#{basename} count=1024 bs=1024")
+      create_test_file(File.join(directory, basename), 1)
     end
   end
 
