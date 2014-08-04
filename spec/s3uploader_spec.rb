@@ -18,10 +18,10 @@ describe S3Uploader do
   before(:each) do
     Fog.mock!
 
-    FileUtils.rm_rf(Dir.glob("#{tmp_directory}/*"))
+    FileUtils.rm_rf(Dir.glob(File.join(tmp_directory, '*')))
 
     (access + error).each do |file|
-      directory, basename = File.split("#{tmp_directory}/#{file}")
+      directory, basename = File.split(File.join(tmp_directory, file))
       FileUtils.mkdir_p directory
       Open3.popen3("dd if=/dev/zero of=#{directory}/#{basename} count=1024 bs=1024")
     end
@@ -100,7 +100,7 @@ describe S3Uploader do
     it 'should use gzip_working_dir correctly' do
       working_dir = File.join(Dir.tmpdir, 's3uploader_spec/working_dir')
       FileUtils.mkdir_p working_dir
-      FileUtils.rm_rf(Dir.glob("#{working_dir}/*"))
+      FileUtils.rm_rf(Dir.glob(File.join(working_dir, '*')))
 
       connection = double(:connection)
       connection.stub_chain(:directories, :new).and_return(directory = double(:directory))
@@ -151,7 +151,7 @@ describe S3Uploader do
       connection.stub_chain(:directories, :new).and_return(directory = double(:directory))
       directory.stub(:files).and_return(files = double(:files))
 
-      file_names = access.map { |f| "#{tmp_directory}/#{f}" }
+      file_names = access.map { |f| File.join( tmp_directory, f) }
       yesterday  = Time.now - (60 * 60 * 24)
       File.utime(yesterday, yesterday, *file_names)
 
@@ -169,7 +169,7 @@ describe S3Uploader do
       connection.stub_chain(:directories, :new).and_return(directory = double(:directory))
       directory.stub(:files).and_return(files = double(:files))
 
-      file_names = access.map { |f| "#{tmp_directory}/#{f}" }
+      file_names = access.map { |f| File.join( tmp_directory, f) }
       yesterday  = Time.now - (60 * 60 * 12)
       File.utime(yesterday, yesterday, *file_names)
 
