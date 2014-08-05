@@ -12,16 +12,31 @@ module S3Uploader
       :path_style => false,
       :regexp => /.*/,
       :gzip => false,
-      :gzip_working_dir => source,
+      :gzip_working_dir => nil,
       :time_range => Time.at(0)..(Time.now + (60 * 60 * 24))
     }.merge(options)
 
     log = options[:logger] || Logger.new(STDOUT)
 
     raise 'Source must be a directory' unless File.directory?(source)
-    if options[:gzip_working_dir] != source && options[:gzip_working_dir][source]
-      raise 'gzip_working_dir may not be located within source-folder'
+
+
+    if options[:gzip]
+      if options[:gzip_working_dir].nil?
+        raise 'gzip_working_dir required when using gzip'
+      else
+        source_dir = source.end_with?('/') ? source : [ source, '/'].join
+        gzip_working_dir = options[:gzip_working_dir].end_with?('/') ?
+                              options[:gzip_working_dir] : [ options[:gzip_working_dir], '/'].join
+
+        if gzip_working_dir.start_with?(source_dir)
+          raise 'gzip_working_dir may not be located within source-folder'
+        end
+      end
+
+      options[:gzip_working_dir] = options[:gzip_working_dir].chop if options[:gzip_working_dir].end_with?('/')
     end
+
 
     if options[:connection]
       connection = options[:connection]
@@ -38,7 +53,7 @@ module S3Uploader
     end
 
     source = source.chop if source.end_with?('/')
-    options[:gzip_working_dir] = options[:gzip_working_dir].chop if options[:gzip_working_dir].end_with?('/')
+
     if options[:destination_dir] != '' && !options[:destination_dir].end_with?('/')
       options[:destination_dir] = "#{options[:destination_dir]}/"
     end
@@ -85,7 +100,7 @@ module S3Uploader
           end
           file = files.pop rescue nil
           if file
-            key = file.gsub(source, '').gsub(options[:gzip_working_dir], '')[1..-1]
+            key = file.gsub(source, '').gsub(options[:gzip_working_dir].to_s, '')[1..-1]
             dest = "#{options[:destination_dir]}#{key}"
             log.info("[#{Thread.current["file_number"]}/#{total_files}] Uploading #{key} to s3://#{bucket}/#{dest}")
 
