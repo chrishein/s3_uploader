@@ -29,18 +29,24 @@ Or install it yourself as:
 
 ## Usage
 
+```ruby
 	S3Uploader.upload_directory('/tmp/test', 'mybucket',
-		{ 	:s3_key => YOUR_KEY,
-			:s3_secret => YOUR_SECRET_KEY,
-			:destination_dir => 'test/',
-			:region => 'eu-west-1',
-			:threads => 4,
-      		:metadata => { 'Cache-Control' => 'max-age=315576000' } 
+		{ 	 :s3_key => YOUR_KEY,
+			   :s3_secret => YOUR_SECRET_KEY,
+			   :destination_dir => 'test/',
+			   :region => 'eu-west-1',
+			   :threads => 4,
+			   :metadata => { 'Cache-Control' => 'max-age=315576000' }
 		})
+```
 
 If no keys are provided, it uses S3_KEY and S3_SECRET environment variables. us-east-1 is the default region.
 
+```ruby
 	S3Uploader.upload_directory('/tmp/test', 'mybucket', { :destination_dir => 'test/', :threads => 4 })
+```
+
+Metadata headers are documented [here](http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectPUT.html)
 
 Or as a command line binary
 
@@ -49,14 +55,26 @@ Or as a command line binary
 Again, it uses S3_KEY and S3_SECRET environment variables if non provided in parameters.
 
 	s3uploader -d test/ -t 4 /tmp/test mybucket
-	
-	
-Metadata headers are documented [here](http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectPUT.html)
+
+## Compress files
+
+If the `:gzip` options is used, files not already compressed are packed using GZip before upload. A GZip working
+directory is required in this case.
+
+```ruby
+  S3Uploader.upload_directory('/tmp/test', 'mybucket',
+    {    :s3_key => YOUR_KEY,
+         :s3_secret => YOUR_SECRET_KEY,
+         :destination_dir => 'test/',
+         :region => 'eu-west-1',
+         :gzip => true,
+         :gzip_working_dir => '/tmp/gzip_working_dir'
+    })
+```
 
 ## TODO
 
-1. Allow regex pattern matching to select files to upload
-2. Add optional time, size and number of files uploaded report at end of process
+1. Add optional time, size and number of files uploaded report at end of process
 
 ## Contributing
 
