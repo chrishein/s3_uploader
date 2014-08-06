@@ -132,6 +132,27 @@ describe S3Uploader do
       }.to_not raise_error
 
     end
+
+    # Run with: rspec --tag slow
+    it 'uploads large files', :slow do
+      working_dir = File.join(Dir.tmpdir, 's3uploader_big_file_spec/working_dir')
+      big_file_dir = File.join(Dir.tmpdir, 'test_s3_uploader_big_file')
+      FileUtils.mkdir_p working_dir
+      FileUtils.mkdir_p  big_file_dir
+      create_test_file(File.join(big_file_dir, 'test_big_file.dmp'), 2*1024)
+
+      S3Uploader.upload_directory(big_file_dir, 'mybucket',
+                                  { logger:          logger,
+                                    connection:      connection,
+                                    gzip:             true,
+                                    gzip_working_dir: working_dir })
+
+      files = connection.directories.get('mybucket').files
+      expect(files.map(&:key)).to match_array([ 'test_big_file.dmp.gz' ])
+
+      FileUtils.rm_rf(Dir.glob(File.join(working_dir, '*')))
+      FileUtils.rm_rf(Dir.glob(File.join(big_file_dir, '*')))
+    end
   end
 
   describe 'time_range' do

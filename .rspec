@@ -1,0 +1,2 @@
+# Skip all tests tagged with "slow"
+--tag ~slow

@@ -1,5 +1,7 @@
 module S3Uploader
   KILO_SIZE = 1024.0
+  BLOCK_SIZE = 1024 * 1024
+
   def self.upload_directory(source, bucket, options = {})
     options = {
       :destination_dir => '',
@@ -71,8 +73,14 @@ module S3Uploader
           Zlib::GzipWriter.open(gz_file) do |gz|
             gz.mtime     = File.mtime(f)
             gz.orig_name = f
-            gz.write IO.binread(f)
+
+            File.open(f, 'rb') do |fi|
+              while (block_in = fi.read(BLOCK_SIZE)) do
+                gz.write block_in
+              end
+            end
           end
+
           files << gz_file
           total_size += File.size(gz_file)
         else
