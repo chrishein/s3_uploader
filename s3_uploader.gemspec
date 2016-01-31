@@ -15,9 +15,10 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = S3Uploader::VERSION
   gem.license       = 'MIT'
-  
-  gem.add_dependency 'fog'
-  
+
+  gem.add_dependency 'fog-aws'
+  gem.add_dependency 'mime-types'
+
   gem.add_development_dependency 'rspec', '~>2.14.1'
   gem.add_development_dependency 'rake'
 end
