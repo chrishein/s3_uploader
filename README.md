@@ -90,6 +90,7 @@ directory is required in this case.
 * [Brandon Hilkert](https://github.com/brandonhilkert)
 * [Philip Cunningham](https://github.com/unsymbol)
 * [Ludwig Bratke](https://github.com/bratke)
+* [John Pignata](https://github.com/jpignata)
 
 ## License
 
