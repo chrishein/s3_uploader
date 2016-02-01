@@ -1,4 +1,4 @@
-require 'fog'
+require 'fog/aws'
 require 'thread'
 require 'logger'
 require "s3_uploader/version"
