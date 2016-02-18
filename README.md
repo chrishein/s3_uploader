@@ -30,7 +30,21 @@ Or install it yourself as:
 ## Usage
 
 ```ruby
-	S3Uploader.upload_directory('/tmp/test', 'mybucket',
+	uploader = S3Uploader::Uploader.new({
+         :s3_key => YOUR_KEY,
+         :s3_secret => YOUR_SECRET_KEY,
+         :destination_dir => 'test/',
+         :region => 'eu-west-1',
+         :threads => 10
+		})
+
+  uploader.upload('/tmp/test', 'mybucket')
+```
+
+or
+
+```ruby
+	S3Uploader.upload('/tmp/test', 'mybucket',
 		{ 	 :s3_key => YOUR_KEY,
 			   :s3_secret => YOUR_SECRET_KEY,
 			   :destination_dir => 'test/',
@@ -40,11 +54,13 @@ Or install it yourself as:
 		})
 ```
 
-If no keys are provided, it uses S3_KEY and S3_SECRET environment variables. us-east-1 is the default region.
+Former static method upload_directory is still supported for backwards compatibility.
 
 ```ruby
 	S3Uploader.upload_directory('/tmp/test', 'mybucket', { :destination_dir => 'test/', :threads => 4 })
 ```
+
+If no keys are provided, it uses S3_KEY and S3_SECRET environment variables. us-east-1 is the default region.
 
 Metadata headers are documented [here](http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectPUT.html)
 
@@ -72,10 +88,6 @@ directory is required in this case.
     })
 ```
 
-## TODO
-
-1. Add optional time, size and number of files uploaded report at end of process
-
 ## Contributing
 
 1. Fork it
@@ -91,6 +103,7 @@ directory is required in this case.
 * [Philip Cunningham](https://github.com/unsymbol)
 * [Ludwig Bratke](https://github.com/bratke)
 * [John Pignata](https://github.com/jpignata)
+* [eperezks](https://github.com/eperezks)
 
 ## License
 

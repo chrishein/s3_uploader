@@ -2,14 +2,15 @@ require 'spec_helper'
 
 describe S3Uploader do
 
+  let(:tmp_directory) do
+    File.join(Dir.tmpdir, 'test_s3_uploader')
+  end
   let(:access) do
-    %w(access.log access.log.1 access.log.2.gz subdir/access.log subdir/access.log.1 subdir/access.log.2.gz)
+    %w(access.log access.log.1 access.log.2.gz subdir/access.log subdir/access.log.1 subdir/access.log.2.gz) +
+    [ File.join('subdirX', tmp_directory, 'somefile-access.txt')]
   end
   let(:error) do
     %w(error.log error.log.1 error.log.2.gz subdir/error.log subdir/error.log.1 subdir/error.log.2.gz)
-  end
-  let(:tmp_directory) do
-    File.join(Dir.tmpdir, 'test_s3_uploader')
   end
   let(:logger) do
     Logger.new(STDOUT)
@@ -45,7 +46,7 @@ describe S3Uploader do
 
   it 'when called with missing access keys it should raise an exception' do
     lambda {
-      S3Uploader.upload_directory('/tmp', 'mybucket',
+      S3Uploader.upload('/tmp', 'mybucket',
                                   { destination_dir: 'test1/',
                                     s3_key:          nil,
                                     s3_secret:       nil })
@@ -54,11 +55,24 @@ describe S3Uploader do
 
   it 'when called with source not directory it should raise an exception' do
     lambda {
-      S3Uploader.upload_directory('/xzzaz1232', 'mybucket')
+      S3Uploader.upload('/xzzaz1232', 'mybucket')
     }.should raise_error('Source must be a directory')
   end
 
   it 'should upload all files in a directory' do
+    connection.directories.get('mybucket', prefix: 'test1/').files.empty?.should be_true
+
+    S3Uploader.upload(tmp_directory, 'mybucket',
+                                { destination_dir: 'test1/',
+                                  logger:          logger,
+                                  connection:      connection })
+
+    files = connection.directories.get('mybucket', prefix: 'test1/').files
+    expect(files).to have((access + error).size).items
+    expect(files.map(&:key)).to match_array((access + error).map { |f| File.join('test1/', f) })
+  end
+
+  it 'should still support upload_directory static method for backwards compatibility' do
     connection.directories.get('mybucket', prefix: 'test1/').files.empty?.should be_true
 
     S3Uploader.upload_directory(tmp_directory, 'mybucket',
@@ -75,7 +89,7 @@ describe S3Uploader do
 
     it 'should upload specific files' do
 
-      S3Uploader.upload_directory(tmp_directory, 'mybucket',
+      S3Uploader.upload(tmp_directory, 'mybucket',
                                   { logger:     logger,
                                     connection: connection,
                                     regexp:     /access/ })
@@ -91,7 +105,7 @@ describe S3Uploader do
 
     it "should require a gzip working directory" do
       lambda {
-        S3Uploader.upload_directory('/tmp', 'mybucket',
+        S3Uploader.upload('/tmp', 'mybucket',
                                     { logger:     logger,
                                       connection: connection,
                                       gzip: true })
@@ -103,7 +117,7 @@ describe S3Uploader do
       FileUtils.mkdir_p working_dir
       FileUtils.rm_rf(Dir.glob(File.join(working_dir, '*')))
 
-      S3Uploader.upload_directory(tmp_directory, 'mybucket',
+      S3Uploader.upload(tmp_directory, 'mybucket',
                                   { logger:           logger,
                                     connection:       connection,
                                     regexp:           /error/,
@@ -117,13 +131,13 @@ describe S3Uploader do
 
     it 'when called with bad gzip_working_dir it should raise an exception' do
       expect {
-        S3Uploader.upload_directory(tmp_directory, 'mybucket',
+        S3Uploader.upload(tmp_directory, 'mybucket',
                                     { gzip:             true,
                                       gzip_working_dir: File.join(tmp_directory, 'working_dir') })
       }.to raise_error('gzip_working_dir may not be located within source-folder')
 
       expect {
-        S3Uploader.upload_directory(tmp_directory, 'mybucket',
+        S3Uploader.upload(tmp_directory, 'mybucket',
                                     { logger:           logger,
                                       connection:       connection,
                                       regexp:           /non_matching/,
@@ -141,7 +155,7 @@ describe S3Uploader do
       FileUtils.mkdir_p  big_file_dir
       create_test_file(File.join(big_file_dir, 'test_big_file.dmp'), 2*1024)
 
-      S3Uploader.upload_directory(big_file_dir, 'mybucket',
+      S3Uploader.upload(big_file_dir, 'mybucket',
                                   { logger:          logger,
                                     connection:      connection,
                                     gzip:             true,
@@ -162,7 +176,7 @@ describe S3Uploader do
       yesterday  = Time.now - (60 * 60 * 24)
       File.utime(yesterday, yesterday, *file_names)
 
-      S3Uploader.upload_directory(tmp_directory, 'mybucket',
+      S3Uploader.upload(tmp_directory, 'mybucket',
                                   { logger:     logger,
                                     connection: connection,
                                     regexp:     /access/,
@@ -178,7 +192,7 @@ describe S3Uploader do
       File.utime(yesterday, yesterday, *file_names)
 
 
-      S3Uploader.upload_directory(tmp_directory, 'mybucket',
+      S3Uploader.upload(tmp_directory, 'mybucket',
                                   { logger:     logger,
                                     connection: connection,
                                     regexp:     /access/,
