@@ -55,7 +55,10 @@ describe S3Uploader do
 
   it 'when called with source not directory it should raise an exception' do
     lambda {
-      S3Uploader.upload('/xzzaz1232', 'mybucket')
+      S3Uploader.upload('/xzzaz1232', 'mybucket', {
+        s3_key:          '11111111111',
+        s3_secret:       'XXXXXXXXXXXXXXXXXXXXXXXXXXX'
+        })
     }.should raise_error('Source must be a directory')
   end
 
@@ -131,9 +134,11 @@ describe S3Uploader do
 
     it 'when called with bad gzip_working_dir it should raise an exception' do
       expect {
-        S3Uploader.upload(tmp_directory, 'mybucket',
-                                    { gzip:             true,
-                                      gzip_working_dir: File.join(tmp_directory, 'working_dir') })
+        S3Uploader.upload(tmp_directory, 'mybucket', {
+                                  s3_key:          '11111111111',
+                                  s3_secret:       'XXXXXXXXXXXXXXXXXXXXXXXXXXX',
+                                  gzip:             true,
+                                  gzip_working_dir: File.join(tmp_directory, 'working_dir') })
       }.to raise_error('gzip_working_dir may not be located within source-folder')
 
       expect {
