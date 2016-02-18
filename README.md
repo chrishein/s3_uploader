@@ -1,6 +1,7 @@
 # S3Uploader
 
 [![Gem Version](https://badge.fury.io/rb/s3_uploader.png)](http://badge.fury.io/rb/s3_uploader)
+[![Build Status](https://travis-ci.org/chrishein/s3_uploader.svg?branch=master)](https://travis-ci.org/chrishein/s3_uploader)
 
 Multithreaded recursive directory uploader to S3 using [fog](https://github.com/fog/fog).
 
