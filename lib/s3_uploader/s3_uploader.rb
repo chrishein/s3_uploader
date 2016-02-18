@@ -108,7 +108,7 @@ module S3Uploader
           end
           file = files.pop rescue nil
           if file
-            key = file.gsub(source, '').gsub(options[:gzip_working_dir].to_s, '')[1..-1]
+            key = file.sub(source, '').sub(options[:gzip_working_dir].to_s, '')[1..-1]
             dest = "#{options[:destination_dir]}#{key}"
             body = File.open(file)
             log.info("[#{Thread.current["file_number"]}/#{total_files}] Uploading #{key} to s3://#{bucket}/#{dest}")
