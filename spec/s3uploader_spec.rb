@@ -45,25 +45,25 @@ describe S3Uploader do
   end
 
   it 'when called with missing access keys it should raise an exception' do
-    lambda {
+    expect {
       S3Uploader.upload('/tmp', 'mybucket',
                                   { destination_dir: 'test1/',
                                     s3_key:          nil,
                                     s3_secret:       nil })
-    }.should raise_error('Missing access keys')
+    }.to raise_error('Missing access keys')
   end
 
   it 'when called with source not directory it should raise an exception' do
-    lambda {
+    expect {
       S3Uploader.upload('/xzzaz1232', 'mybucket', {
         s3_key:          '11111111111',
         s3_secret:       'XXXXXXXXXXXXXXXXXXXXXXXXXXX'
         })
-    }.should raise_error('Source must be a directory')
+    }.to raise_error('Source must be a directory')
   end
 
   it 'should upload all files in a directory' do
-    connection.directories.get('mybucket', prefix: 'test1/').files.empty?.should be_true
+    expect(connection.directories.get('mybucket', prefix: 'test1/').files.empty?).to be true
 
     S3Uploader.upload(tmp_directory, 'mybucket',
                                 { destination_dir: 'test1/',
@@ -76,7 +76,7 @@ describe S3Uploader do
   end
 
   it 'should still support upload_directory static method for backwards compatibility' do
-    connection.directories.get('mybucket', prefix: 'test1/').files.empty?.should be_true
+    expect(connection.directories.get('mybucket', prefix: 'test1/').files.empty?).to be true
 
     S3Uploader.upload_directory(tmp_directory, 'mybucket',
                                 { destination_dir: 'test1/',
@@ -107,12 +107,12 @@ describe S3Uploader do
   describe 'gzip' do
 
     it "should require a gzip working directory" do
-      lambda {
+      expect {
         S3Uploader.upload('/tmp', 'mybucket',
                                     { logger:     logger,
                                       connection: connection,
                                       gzip: true })
-      }.should raise_error('gzip_working_dir required when using gzip')
+      }.to raise_error('gzip_working_dir required when using gzip')
     end
 
     it 'should compress files before upload when needed' do
