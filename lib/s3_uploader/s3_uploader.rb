@@ -60,8 +60,9 @@ module S3Uploader
       end
     end
 
-    def upload(source, bucket)
-      raise 'Source directory is requiered' if source.to_s.empty?
+    def upload(source_dir, bucket)
+      raise 'Source directory is requiered' if source_dir.to_s.empty?
+      source = source_dir.dup
       source << '/' unless source.end_with?('/')
       raise 'Source must be a directory' unless File.directory?(source)
 
