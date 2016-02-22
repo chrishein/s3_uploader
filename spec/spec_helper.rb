@@ -1,10 +1,11 @@
+require 'coveralls'
+Coveralls.wear!
+
 require 'rspec'
 require 'rspec/collection_matchers'
 require 's3_uploader'
 require 'tmpdir'
 require 'open3'
-require 'coveralls'
-Coveralls.wear!
 
 RSpec.configure do |config|
   config.color = true
