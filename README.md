@@ -2,6 +2,7 @@
 
 [![Gem Version](https://badge.fury.io/rb/s3_uploader.svg)](https://badge.fury.io/rb/s3_uploader)
 [![Build Status](https://travis-ci.org/chrishein/s3_uploader.svg?branch=master)](https://travis-ci.org/chrishein/s3_uploader)
+[![Coverage Status](https://coveralls.io/repos/github/chrishein/s3_uploader/badge.svg?branch=master)](https://coveralls.io/github/chrishein/s3_uploader?branch=master)
 
 Multithreaded recursive directory uploader to S3 using [fog](https://github.com/fog/fog).
 
