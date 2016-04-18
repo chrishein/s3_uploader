@@ -36,6 +36,10 @@ opt_parser = OptionParser.new do |opt|
     options[:s3_secret] = s3_secret
   end
 
+  opt.on("-f","--filter","set specific files to upload like '*xml'. Default: '**/*' recursive mode") do |value|
+    options[:filter] = value
+  end
+
   opt.on("-h","--help","help") do
     puts opt_parser
     exit
