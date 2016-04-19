@@ -64,8 +64,10 @@ module S3Uploader
     def upload(source_dir, bucket)
       raise 'Source directory is requiered' if source_dir.to_s.empty?
       source = source_dir.dup
-      source << '/' unless source.end_with?('/')
-      raise 'Source must be a directory' unless File.directory?(source)
+      if @options[:filter]=='**/*'
+        source << '/' unless source.end_with?('/')
+        raise 'Source must be a directory' unless File.directory?(source)
+      end
 
       gzip_working_dir = @options[:gzip_working_dir]
 
