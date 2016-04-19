@@ -36,8 +36,7 @@ opt_parser = OptionParser.new do |opt|
     options[:s3_secret] = s3_secret
   end
 
-  #FIXME: some w/ optparse that set true
-  opt.on("-f s","--filter=s","set specific file or specific type files; e.g. *xml. Default: **/* recursive mode") do |filter|
+  opt.on("-g s","--grep *xml","set specific file or specific type files. Default: **/* recursive mode") do |filter|
     options[:filter] = filter
   end
 
