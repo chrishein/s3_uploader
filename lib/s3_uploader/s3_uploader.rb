@@ -26,6 +26,7 @@ module S3Uploader
         :region => DEFAULT_AWS_REGION,
         :metadata => {},
         :path_style => false,
+        :remove => false,
         :regexp => nil,
         :gzip => false,
         :gzip_working_dir => nil,
@@ -142,7 +143,7 @@ module S3Uploader
                 :body   => body,
                 :public => @options[:public],
                 :metadata => @options[:metadata]
-              )
+              ) and @options[:remove]
                 File.delete file
               end
               

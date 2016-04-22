@@ -36,6 +36,10 @@ opt_parser = OptionParser.new do |opt|
     options[:s3_secret] = s3_secret
   end
 
+  opt.on("-r","--rm","Remove localy the uploaded files. Default: not remove files") do |value|
+    options[:remove] = value
+  end
+
   opt.on("-h","--help","help") do
     puts opt_parser
     exit
