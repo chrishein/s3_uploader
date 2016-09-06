@@ -29,7 +29,8 @@ module S3Uploader
         :regexp => nil,
         :gzip => false,
         :gzip_working_dir => nil,
-        :time_range => Time.at(0)..(Time.now + (60 * 60 * 24))
+        :time_range => Time.at(0)..(Time.now + (60 * 60 * 24)),
+        :filter => '**/*'
       }.merge(options)
 
       @logger = @options[:logger] || Logger.new(STDOUT)
@@ -63,8 +64,10 @@ module S3Uploader
     def upload(source_dir, bucket)
       raise 'Source directory is requiered' if source_dir.to_s.empty?
       source = source_dir.dup
-      source << '/' unless source.end_with?('/')
-      raise 'Source must be a directory' unless File.directory?(source)
+      if @options[:filter]=='**/*'
+        source << '/' unless source.end_with?('/')
+        raise 'Source must be a directory' unless File.directory?(source)
+      end
 
       gzip_working_dir = @options[:gzip_working_dir]
 
@@ -79,7 +82,7 @@ module S3Uploader
       total_size = 0
       files = Queue.new
       regexp = @options[:regexp]
-      Dir.glob(File.join(source, '**/*'))
+      Dir.glob(File.join(source, @options[:filter]))
         .select { |f| !File.directory?(f) }.each do |f|
 
         if (regexp.nil? || File.basename(f).match(regexp)) &&
