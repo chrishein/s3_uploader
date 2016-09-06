@@ -26,6 +26,7 @@ module S3Uploader
         :region => DEFAULT_AWS_REGION,
         :metadata => {},
         :path_style => false,
+        :remove => false,
         :regexp => nil,
         :gzip => false,
         :gzip_working_dir => nil,
@@ -137,12 +138,15 @@ module S3Uploader
                             total_files, "] Uploading ", key,
                             " to s3://#{bucket}/#{dest}" ].join)
 
-              directory.files.create(
+              if directory.files.create(
                 :key    => dest,
                 :body   => body,
                 :public => @options[:public],
                 :metadata => @options[:metadata]
-              )
+              ) and @options[:remove]
+                File.delete file
+              end
+              
               body.close
             end
           end
